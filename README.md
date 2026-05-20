@@ -263,12 +263,3 @@ If you use this repository, please cite:
   note={arXiv:2605.18191v1}
 }
 ```
-
-## Releasing Notes
-
-Before publishing a public repository:
-
-1. Keep `.env`, logs, WandB runs, outputs, checkpoints, and local data out of git.
-2. Verify licenses for upstream `verl`, CharRM/CharacterEval, RoleBench, mCSQA, the base models, the judge model, and released processed data.
-3. Add a top-level `LICENSE` file matching the intended release license.
-4. If you include processed datasets, document exact generation/filtering scripts and model versions.
