@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environments and local config
+.env
+.venv/
+venv/
+env/
+
+# Experiment artifacts
+**/log/
+**/outputs/
+**/wandb/
+wandb/
+checkpoints/
+*.log
+*.jsonl
+
+# Model/checkpoint weights
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Local data mirrors
+data/
+models/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/
