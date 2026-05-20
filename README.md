@@ -1,14 +1,30 @@
-# PPR-GDE Roleplay RL Research
+# PPR-GDE
 
-This repository contains the training and evaluation code for roleplay-oriented RL experiments built on top of `verl`. The `base/` directory is the PPR-GDE algorithm implementation; `grpo/` and `ppo/` contain method-comparison variants, and `test/` contains held-out evaluation entrypoints.
+Official code for **Pairwise Preference Reward and Group-Based Diversity Enhancement for Superior Open-Ended Generation**.
+
+Paper: [arXiv:2605.18191v1](https://arxiv.org/abs/2605.18191v1)
+
+PPR-GDE is an online RL method for open-ended generation, instantiated in this repository on role-playing. Instead of training a scalar reward model for subjective quality, PPR-GDE uses pairwise preference comparisons, reduces judge position bias by repeating comparisons with swapped response order, and adds a group-based diversity reward to encourage semantic dispersion among responses sampled for the same prompt. These signals are optimized in a group-relative policy optimization objective.
+
+The `base/` directory is the PPR-GDE algorithm implementation. `grpo/` and `ppo/` contain method-comparison variants, and `test/` contains held-out evaluation entrypoints.
+
+![PPR-GDE system architecture](figures/system.png)
+
+## Method Overview
+
+- **Pairwise Preference Reward (PPR)**: compares sampled responses pairwise with an OpenAI-compatible judge service, preserving relative preference information for subjective role-playing quality.
+- **Position-Bias Mitigation**: repeats pairwise comparisons with swapped answer order to reduce judge sensitivity to presentation order.
+- **Group-Based Diversity Enhancement (GDE)**: computes embedding-based diversity within each response group and injects this reward with weight `lambda`.
+- **Role-Playing Evaluation**: tracks RoleLLM-style judge scores, CharacterEval/CharRM consistency, and semantic diversity during validation.
 
 ## Repository Layout
 
 ```text
 .
-├── base/                  # PPR-GDE training code and scripts
-├── grpo/                  # GRPO reward-manager variant
-├── ppo/                   # PPO/GAE variant with critic warmup
+├── base/                  # PPR-GDE algorithm implementation
+├── figures/               # Paper and system diagrams
+├── grpo/                  # GRPO comparison variant
+├── ppo/                   # PPO/GAE comparison variant with critic warmup
 ├── test/                  # Evaluation-only entrypoints
 ├── .env.example           # Local path and endpoint template
 └── README.md
@@ -41,8 +57,8 @@ Runtime outputs are intentionally ignored by git:
   - `self.reward_fn(...)`: reward calculation. When `has_thinking=False`, the thinking tensor is empty.
   - `compute_advantage`: advantage calculation for GRPO/PPO.
 - `verl.workers.reward_manager`:
-  - `thinking`: pairwise reward, diversity reward, thinking reward, and detailed `naive.log` output.
-  - `grpo`: GRPO reward variant.
+  - `thinking`: PPR-GDE reward logic, including pairwise preference reward, diversity reward, thinking reward, and detailed `naive.log` output.
+  - `grpo`: GRPO comparison reward variant.
   - `rolellm`: validation scoring with RoleLLM.
   - `char_rm`: CharacterEval wrapper.
   - `diversity`: embedding-based diversity evaluation.
@@ -214,7 +230,7 @@ For a trained model, point `MODEL_SAVE_DIR` to the same checkpoint root used dur
 - `ADV_ESTIMATOR`: `grpo` for GRPO-style runs, `gae` for PPO.
 - `TRAIN_FILES`, `VAL_FILES`, `VAL_CHAR_FILES`: parquet paths.
 - `MAX_PROMPT_LENGTH`, `MAX_CHAR_PROMPT_LENGTH`: prompt length caps. CharacterEval prompts can be long because they include multi-turn context.
-- `ROLLOUT_N`: number of sampled answers per prompt during training.
+- `ROLLOUT_N`: group sampling size, i.e. the number of responses sampled per prompt for group-relative optimization and diversity computation.
 - `VAL_ROLLOUT_N`: number of sampled answers per prompt during validation.
 - `CRITIC_WARMUP`: PPO critic warmup steps.
 - `N_GPUS_PER_NODE`: should match the number of visible GPUs.
@@ -231,6 +247,22 @@ Validation and training logs are written under `LOG_DIR`:
 - `judge_results_<step>.jsonl`: RoleLLM validation results; all samples get `cus`, and `raw`/`spe` are scored according to `task_name`.
 - `naive.log`: detailed pairwise reward calculation log. This can become very large.
 - `train.log`: full training stdout/stderr, including config, timing, and validation summaries.
+
+## Citation
+
+If you use this repository, please cite:
+
+```bibtex
+@misc{cao2026pprgde,
+  title={Pairwise Preference Reward and Group-Based Diversity Enhancement for Superior Open-Ended Generation},
+  author={Guining Cao and Jiaxin Peng and Chu Zeng and Yu Zhao and Shuangyong Song and Yongxiang},
+  year={2026},
+  eprint={2605.18191},
+  archivePrefix={arXiv},
+  primaryClass={cs.AI},
+  note={arXiv:2605.18191v1}
+}
+```
 
 ## Releasing Notes
 
