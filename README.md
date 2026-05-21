@@ -102,32 +102,76 @@ If the services run on another machine, set these to the reachable IP/ports befo
 
 ## Dataset
 
-Place the processed parquet files under `DATA_DIR`, usually:
+The repository now includes the role-playing data workspace under `data/roleplay`. By default, training scripts set:
+
+```bash
+DATA_DIR=./data/roleplay
+```
+
+Current structure:
 
 ```text
 data/roleplay/
+├── code/
+│   ├── check.py
+│   ├── del_pre.py
+│   ├── diff.py
+│   ├── merege.py
+│   ├── process.py
+│   ├── rolellm_dataset.py
+│   ├── sample.py
+│   ├── test.py
+│   └── test_raw.py
+├── tem/
+│   ├── desc.json
+│   ├── test_raw.jsonl
+│   ├── test_spe.jsonl
+│   ├── train.jsonl
+│   ├── train_raw.jsonl
+│   └── train_spe.jsonl
 ├── train.parquet
 ├── val_512.parquet
 ├── test_512.parquet
 ├── char_rm_val_2048.parquet
-├── char_rm_test_2048.parquet
-├── train_think.parquet
-├── test_think_128.parquet
-└── char_rm_think.parquet
+└── char_rm_test_2048.parquet
 ```
 
-The training samples are expected to be pre-assembled prompts. The original data pipeline used:
+The parquet files are ready-to-use training/evaluation files:
+
+- `train.parquet`: mixed training set.
+- `val_512.parquet`: validation set for RoleLLM-style judge evaluation.
+- `test_512.parquet`: held-out test set for final evaluation.
+- `char_rm_val_2048.parquet`: CharacterEval/CharRM validation subset.
+- `char_rm_test_2048.parquet`: CharacterEval/CharRM test subset.
+
+The `tem/` directory stores intermediate JSON/JSONL inputs:
+
+- `desc.json`: role-name to role-description mapping.
+- `train.jsonl`: merged training source before parquet conversion.
+- `train_raw.jsonl`, `train_spe.jsonl`: raw and role-specific training sources.
+- `test_raw.jsonl`, `test_spe.jsonl`: raw and role-specific test sources.
+
+Each JSONL sample uses the basic schema:
+
+```json
+{"role": "Frank T.J. Mackey", "question": "Can you tell us about your relationship with your father?", "language": "en"}
+```
+
+The training samples are converted into pre-assembled prompts before being written to parquet. The original data pipeline used:
 
 - `spe`: role-specific samples derived from RoleBench, sampled at `en:cn = 3:1`.
 - `raw`: general ability samples derived from mCSQA, matched with role backgrounds and filtered by a judge model to remove background conflicts.
 - `char_rm`: CharacterEval/CharRM evaluation data.
 
-Useful preprocessing scripts from the original data workspace:
+Useful preprocessing scripts:
 
 - `rolellm_dataset.py`: converts raw JSONL inputs into training format. Important arguments are `task_name`, `input_file`, and `desc_file`.
-- `merge.py`: merges `raw` and `spe`.
+- `merege.py`: merges `raw` and `spe` parquet files. The filename is kept as-is for compatibility with the current workspace.
 - `sample.py`: samples fixed-size subsets.
 - `check.py`: includes strict judge-resume filtering for raw samples.
+- `process.py`, `del_pre.py`, `diff.py`, `test.py`, `test_raw.py`: helper scripts used during data cleaning, inspection, and debugging.
+
+The think-format scripts (`train_think.sh`) expect optional files such as `train_think.parquet`, `test_think_128.parquet`, and `char_rm_think.parquet`. They are not included in the current `data/roleplay` tree; provide them separately if you run the thinking-format experiments.
 
 ## Starting Services
 

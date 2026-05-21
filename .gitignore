@@ -30,7 +30,6 @@ checkpoints/
 *.safetensors
 
 # Local data mirrors
-data/
 models/
 
 # OS/editor
