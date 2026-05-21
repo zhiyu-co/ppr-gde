@@ -30,8 +30,6 @@ The `base/` directory is the PPR-GDE algorithm implementation. `grpo/` and `ppo/
 └── README.md
 ```
 
-The original experiment matrix also used `div/` for diversity-weight ablations and `m/` for group-sampling-size ablations. Those directories follow the same structure as `base/` when included in a release.
-
 Each experiment directory contains:
 
 - `verl/`: full training code. The main modification points are `verl/trainer`, `verl/workers`, and `verl/utils`.
