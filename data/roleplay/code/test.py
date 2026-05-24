@@ -1,6 +1,13 @@
 import json
 from collections import defaultdict
 import random
+import os
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+ORI_DIR = ROLEPLAY_DATA_DIR / "ori"
+TEM_DIR = ROLEPLAY_DATA_DIR / "tem"
 
 def load_jsonl(path):
     data = []
@@ -65,8 +72,7 @@ def main(file_a, file_c, output_path):
     print(f"✅ 输出完成，共 {len(combined)} 条样本 -> {output_path}")
 
 if __name__ == "__main__":
-    # 修改为你自己的路径
-    a = f"/gemini/space/private/cgn/project/cllm_rl/data/roleplay/ori/spe_en.jsonl"
-    c = f"/gemini/space/private/cgn/project/cllm_rl/data/roleplay/ori/spe.jsonl"
-    out = f"/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_cus.jsonl"
+    a = os.environ.get("SPE_EN_JSONL", str(ORI_DIR / "spe_en.jsonl"))
+    c = os.environ.get("SPE_CN_JSONL", str(ORI_DIR / "spe.jsonl"))
+    out = os.environ.get("OUTPUT_JSONL", str(TEM_DIR / "test_cus.jsonl"))
     main(a, c, out)

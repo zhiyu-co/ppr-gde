@@ -1,5 +1,11 @@
+import os
 import re, json
+from pathlib import Path
 from openai import OpenAI
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+TEM_DIR = ROLEPLAY_DATA_DIR / "tem"
 
 
 def extract_first_json(text: str):
@@ -59,13 +65,12 @@ def predict(messages):
     """调用部署的 vLLM(OpenAI 兼容) 服务生成响应。
 
     优先从环境变量读取：
-      - VLLM_API_BASE: 例如 http://10.244.78.132:8010/v1
+      - VLLM_API_BASE: 例如 http://127.0.0.1:8355/v1
       - VLLM_API_KEY: 例如 EMPTY 或你的鉴权KEY
-    如未设置，则回落到用户给定的默认值。
+    如未设置，则回落到本地默认值。
     """
-    # api_base = os.environ.get("VLLM_API_BASE", "http://10.244.69.34:8355/v1") 
-    api_base = "http://10.244.23.160:8355/v1"
-    api_key  = "EMPTY"
+    api_base = os.environ.get("VLLM_API_BASE", "http://127.0.0.1:8355/v1")
+    api_key  = os.environ.get("VLLM_API_KEY", "EMPTY")
 
     if OpenAI is None:
         raise RuntimeError("openai SDK 未安装，无法调用兼容接口。请先 pip install openai>=1.0.0")
@@ -232,6 +237,6 @@ def filter_jsonl_with_judge_resume_strict(input_jsonl_path: str, output_jsonl_pa
                 fout.write(json.dumps(sample, ensure_ascii=False) + "\n")
                 fout.flush()
                 
-input = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw.jsonl"
-output = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw_new.jsonl"
+input = os.environ.get("INPUT_JSONL", str(TEM_DIR / "test_raw.jsonl"))
+output = os.environ.get("OUTPUT_JSONL", str(TEM_DIR / "test_raw_new.jsonl"))
 filter_jsonl_with_judge_resume_strict(input, output)

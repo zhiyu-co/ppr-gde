@@ -1,4 +1,10 @@
+import os
 import json
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+TEM_DIR = ROLEPLAY_DATA_DIR / "tem"
 
 def process_question(question: str, language: str) -> str:
     if not isinstance(question, str):
@@ -124,9 +130,9 @@ def dedup_jsonl_by_question(input_path, output_path):
     print(f"去重完成，保留样本数：{kept_samples}")
 
 
-input = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw.jsonl"
-input_2 = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_cus.jsonl"
-output = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw_1.jsonl"
+input = os.environ.get("INPUT_JSONL", str(TEM_DIR / "test_raw.jsonl"))
+input_2 = os.environ.get("INPUT_JSONL_2", str(TEM_DIR / "test_cus.jsonl"))
+output = os.environ.get("OUTPUT_JSONL", str(TEM_DIR / "test_raw_1.jsonl"))
 
 process_and_merge_jsonl(input, output)
 # dedup_jsonl_by_question(input, output)

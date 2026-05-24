@@ -1,6 +1,14 @@
 import json
 import random
 from collections import defaultdict
+import os
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+ORI_DIR = ROLEPLAY_DATA_DIR / "ori"
+TEM_DIR = ROLEPLAY_DATA_DIR / "tem"
+ROLEBENCH_DIR = Path(os.environ.get("ROLEBENCH_DIR", ROLEPLAY_DATA_DIR / "rolebench"))
 
 def load_jsonl(path):
     """读取 jsonl 文件"""
@@ -103,9 +111,9 @@ def main(file_a, file_c, ab_desc_file, c_desc_file, output_path):
     print(f"✅ 输出完成，共 {len(combined)} 条样本 -> {output_path}")
 
 if __name__ == "__main__":
-    a = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/ori/test_raw_en.jsonl"
-    c = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/ori/test_raw_cn.jsonl"
-    out = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw.jsonl"
-    ab_desc = "/gemini/space/private/cgn/project/cllm_rl/data/data_set/ZenMoore_RoleBench/profiles-eng/desc.json"
-    c_desc = "/gemini/space/private/cgn/project/cllm_rl/data/data_set/ZenMoore_RoleBench/profiles-zh/desc.json"
+    a = os.environ.get("RAW_EN_JSONL", str(ORI_DIR / "test_raw_en.jsonl"))
+    c = os.environ.get("RAW_CN_JSONL", str(ORI_DIR / "test_raw_cn.jsonl"))
+    out = os.environ.get("OUTPUT_JSONL", str(TEM_DIR / "test_raw.jsonl"))
+    ab_desc = os.environ.get("ROLEBENCH_DESC_EN", str(ROLEBENCH_DIR / "profiles-eng" / "desc.json"))
+    c_desc = os.environ.get("ROLEBENCH_DESC_CN", str(ROLEBENCH_DIR / "profiles-zh" / "desc.json"))
     main(a, c, ab_desc, c_desc, out)

@@ -46,6 +46,11 @@ import json
 import random
 import pandas as pd
 from typing import List, Dict, Any
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+TEM_DIR = ROLEPLAY_DATA_DIR / "tem"
 
 
 SYSTEM_THINK_CN_O = """
@@ -365,14 +370,14 @@ def read_character_jsonl_data(file_path: str, role_descriptions: Dict[str, str],
 
 def main():
     """主函数：处理数据转换流程"""
-    task_name = "raw"
+    task_name = os.environ.get("TASK_NAME", "raw")
     # 配置路径
-    save_dir = f"/gemini/space/private/cgn/project/cllm_rl/data/roleplay/{task_name}.parquet"   # 输出目录
-    input_file = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/test_raw.jsonl" 
-    desc_file = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/tem/desc.json" 
+    save_dir = os.environ.get("OUTPUT_PARQUET", str(ROLEPLAY_DATA_DIR / f"{task_name}.parquet"))   # 输出目录
+    input_file = os.environ.get("INPUT_JSONL", str(TEM_DIR / "test_raw.jsonl")) 
+    desc_file = os.environ.get("DESC_JSON", str(TEM_DIR / "desc.json")) 
     
     # 配置模型类型 - 可选择: 'qwen3', 'llama3', 'chatglm', 'baichuan', 'general'
-    model_type = 'qwen3'  # 默认使用Qwen3模板，可根据需要修改
+    model_type = os.environ.get("MODEL_TYPE", "qwen3")  # 默认使用Qwen3模板，可根据需要修改
     
     # 数据来源标识
     data_source = 'roleplay'
@@ -448,6 +453,6 @@ if __name__ == '__main__':
     main()
 
 '''
-python /gemini/space/private/lyh/Code/role_grpo/examples/data_preprocess/rolellm_dataset.py
-
+Example:
+TASK_NAME=raw INPUT_JSONL=../tem/test_raw.jsonl DESC_JSON=../tem/desc.json python rolellm_dataset.py
 '''

@@ -1,11 +1,16 @@
 import pandas as pd
+import os
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
 
 # === 抽样数量 ===
 n_samples = 2048
 
 # === 输入与输出路径 ===
-input_file = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/char_rm_4096.parquet"       # 原始 parquet 文件路径
-output_file = f"/gemini/space/private/cgn/project/cllm_rl/data/roleplay/char_rm_{n_samples}.parquet"   # 输出样本文件路径
+input_file = os.environ.get("INPUT_PARQUET", str(ROLEPLAY_DATA_DIR / "char_rm_4096.parquet"))       # 原始 parquet 文件路径
+output_file = os.environ.get("OUTPUT_PARQUET", str(ROLEPLAY_DATA_DIR / f"char_rm_{n_samples}.parquet"))   # 输出样本文件路径
 
 
 

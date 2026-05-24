@@ -1,14 +1,17 @@
 import pandas as pd
 import os
+from pathlib import Path
 from tqdm import tqdm
 
 
-a = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/raw.parquet" 
-b = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/spe.parquet"  
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
+
+a = os.environ.get("RAW_PARQUET", str(ROLEPLAY_DATA_DIR / "raw.parquet")) 
+b = os.environ.get("SPE_PARQUET", str(ROLEPLAY_DATA_DIR / "spe.parquet"))  
 
 # === 输入与输出路径 ===
 files = [a, b]
-output_file = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/test_1024.parquet"  
+output_file = os.environ.get("OUTPUT_PARQUET", str(ROLEPLAY_DATA_DIR / "test_1024.parquet"))  
 
 # === 工具函数 ===
 def get_task_from_filename(path: str):

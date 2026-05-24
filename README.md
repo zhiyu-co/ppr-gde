@@ -171,6 +171,8 @@ Useful preprocessing scripts:
 - `check.py`: includes strict judge-resume filtering for raw samples.
 - `process.py`, `del_pre.py`, `diff.py`, `test.py`, `test_raw.py`: helper scripts used during data cleaning, inspection, and debugging.
 
+These scripts default to paths under `data/roleplay` and can be redirected without editing source code by setting `ROLEPLAY_DATA_DIR` plus task-specific variables such as `INPUT_JSONL`, `OUTPUT_JSONL`, `INPUT_PARQUET`, `OUTPUT_PARQUET`, `VLLM_API_BASE`, or `ROLEBENCH_DIR`.
+
 The think-format scripts (`train_think.sh`) expect optional files such as `train_think.parquet`, `test_think_128.parquet`, and `char_rm_think.parquet`. They are not included in the current `data/roleplay` tree; provide them separately if you run the thinking-format experiments.
 
 ## Starting Services

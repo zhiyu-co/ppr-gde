@@ -1,4 +1,9 @@
 import pandas as pd
+import os
+from pathlib import Path
+
+
+ROLEPLAY_DATA_DIR = Path(os.environ.get("ROLEPLAY_DATA_DIR", Path(__file__).resolve().parents[1]))
 
 def parquet_diff(file_a, file_b, output_file):
 
@@ -26,10 +31,10 @@ def parquet_diff(file_a, file_b, output_file):
     
     
     
-file_a = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/char_rm_4096.parquet"  
-file_b = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/char_rm_2048.parquet"  
+file_a = os.environ.get("PARQUET_A", str(ROLEPLAY_DATA_DIR / "char_rm_4096.parquet"))  
+file_b = os.environ.get("PARQUET_B", str(ROLEPLAY_DATA_DIR / "char_rm_2048.parquet"))  
 
-output_file = "/gemini/space/private/cgn/project/cllm_rl/data/roleplay/char_rm_test_2048.parquet"  
+output_file = os.environ.get("OUTPUT_PARQUET", str(ROLEPLAY_DATA_DIR / "char_rm_test_2048.parquet"))  
 
 
 parquet_diff(file_a, file_b, output_file)
