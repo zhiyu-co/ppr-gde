@@ -65,7 +65,7 @@ Runtime outputs are intentionally ignored by git:
 
 ## Environment Setup
 
-Create a Python environment following the `verl`/vLLM stack required by your hardware. At minimum this project expects PyTorch, Ray, vLLM, Transformers, Hydra/OmegaConf, FastAPI/Uvicorn, OpenAI SDK, SentenceTransformers, Pandas/PyArrow, Tensordict, PEFT, and WandB. Install FlashAttention according to your CUDA/PyTorch version.
+Create a Python environment following the `verl`/vLLM stack required by your hardware. At minimum this project expects PyTorch, Ray, vLLM, Transformers, Hydra/OmegaConf, FastAPI/Uvicorn, OpenAI SDK, SentenceTransformers, Pandas, PEFT, and WandB.
 
 Use `.env.example` as a local configuration template, or edit the variables at the top of each `.sh` script directly:
 
@@ -176,6 +176,20 @@ The think-format scripts (`train_think.sh`) expect optional files such as `train
 ## Starting Services
 
 Start the three auxiliary services before training. Use different GPUs/ports when running multiple experiments on the same node.
+
+Download or point each script to the corresponding model:
+
+- `char_rm.sh`: CharacterEval/CharRM service, using [morecry/BaichuanCharRM](https://huggingface.co/morecry/BaichuanCharRM).
+- `embedding.sh`: embedding service for diversity reward/evaluation, using [Qwen/Qwen3-Embedding-0.6B](https://huggingface.co/Qwen/Qwen3-Embedding-0.6B).
+- `reward.sh`: OpenAI-compatible vLLM judge service, using [Qwen/Qwen3-32B](https://huggingface.co/Qwen/Qwen3-32B).
+
+Set the local model paths before launching:
+
+```bash
+export CHAR_RM_MODEL_PATH=/path/to/BaichuanCharRM
+export EMBEDDING_MODEL_PATH=/path/to/Qwen3-Embedding-0.6B
+export REWARD_MODEL_PATH=/path/to/Qwen3-32B
+```
 
 ```bash
 bash base/char_rm.sh
