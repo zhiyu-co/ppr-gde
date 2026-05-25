@@ -313,7 +313,7 @@ If you use this repository, please cite:
 ```bibtex
 @misc{cao2026pprgde,
   title={Pairwise Preference Reward and Group-Based Diversity Enhancement for Superior Open-Ended Generation},
-  author={Guining Cao and Jiaxin Peng and Chu Zeng and Yu Zhao and Shuangyong Song and Yongxiang},
+  author={Guining Cao and Jiaxin Peng and Chu Zeng and Yu Zhao and Shuangyong Song and Yongxiang Li},
   year={2026},
   eprint={2605.18191},
   archivePrefix={arXiv},
